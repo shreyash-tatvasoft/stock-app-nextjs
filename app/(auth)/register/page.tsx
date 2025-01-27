@@ -47,14 +47,14 @@ const SignupForm = () => {
       );
       const result = await res.json();
 
-      if(result && result.id) {
+      if(result && result.data) {
          toast.success("Register Successfully")
          router.push(ROUTES.LOGIN)
          formik.resetForm()
       } else {
          let errMsg = "Something went wrong"
-         if(result && result.error) {
-             errMsg = result.error
+         if(result && result.message) {
+             errMsg = result.message
          }
          toast.error(errMsg)
       }

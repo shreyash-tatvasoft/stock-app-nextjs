@@ -30,12 +30,13 @@ const ForgotPasswordForm = () => {
       const result = await res.json();
 
       if (result && result.token) {
+        toast.success(result.message)
         router.push(`${ROUTES.RESET_PASSWORD}/${result.token}`);
         formik.resetForm();
       } else {
         let errMsg = "Something went wrong";
-        if (result && result.error) {
-          errMsg = result.error;
+        if (result && result.message) {
+          errMsg = result.message;
         }
         toast.error(errMsg);
       }

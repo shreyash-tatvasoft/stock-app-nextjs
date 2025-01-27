@@ -1,59 +1,41 @@
-import { DB_URL, JWT_SECRET_KEY } from "../../../common/constant";
-import { UserType } from "../../../common/types";
-import jwt from  "jsonwebtoken";
+import { ApiResponse, JWT_SECRET_KEY } from "../../../common/constant";
+import userModel from "../../../server/models/user";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { connectDB } from "@/app/server/db/connectDB";
 
 export async function POST(request: Request) {
-  // get all users
-  const response = await fetch(`${DB_URL}/users`);
-  const users = await response.json();
+  const { name, email, password } = await request.json();
 
-  // get data from body
-  const user = await request.json();
-  const newUser = {
-    id: users.length + 1,
-    name: user.name,
-    email: user.email,
-    password: user.password,
-  };
+  const dbConnection =  await connectDB()
 
-  const findUser = users.find((item: UserType) => item.email === user.email);
+  if(!dbConnection) {
+    return ApiResponse(500,{ type: "error", message: "Failed to connect server"})
+  }
 
-  if (findUser) {
-    return new Response(
-      JSON.stringify({
-        error: "Email Already Exists",
-      }),
-      {
-        headers: { "Content-Type": "application/json" },
-        status: 404,
+  const user = await userModel.findOne({ email: email });
+  if (user) {
+    return ApiResponse(400,{ type: "error", message: "Email already exist"})
+  } else {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash(password, salt);
+      const doc = new userModel({
+        name: name,
+        email: email,
+        password: hashPassword,
+      });
+
+      await doc.save();
+      const savedUser = await userModel.findOne({ email: email }).select("-password")
+      if (savedUser) {
+        const token = jwt.sign({ userID: savedUser._id }, JWT_SECRET_KEY, {
+          expiresIn: "1d",
+        });
+        return ApiResponse(201,{ data: savedUser, token})
       }
-    );
+    } catch (error) {
+      console.log(error);
+    }
   }
-
-  // save into DB (for now JSON Web Server)
-  const res = await fetch(`${DB_URL}/users`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(newUser),
-  });
-
-  // If something goes wrong, return an error response
-  if (!res.ok) {
-    return new Response(JSON.stringify({ error: "Failed to register user" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  // save to DB
-  await users.push(newUser);
-
-  const token = jwt.sign({ userId : newUser.id}, JWT_SECRET_KEY, {expiresIn : "1d"})
-
-  return new Response(JSON.stringify({newUser, token}), {
-    headers: { "Content-Type": "application/json" },
-    status: 201,
-  });
 }

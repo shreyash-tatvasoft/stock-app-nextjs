@@ -28,7 +28,7 @@ const ResetPwdForm: NextPage<FormProps> = ({ token }) => {
         new_password: values.password,
       };
       const res = await fetch(API_ROUTES.USER_ROUTES.RESET_PASSWORD, {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           token: token,
@@ -43,8 +43,8 @@ const ResetPwdForm: NextPage<FormProps> = ({ token }) => {
         formik.resetForm();
       } else {
         let errMsg = "Something went wrong";
-        if (result && result.error) {
-          errMsg = result.error;
+        if (result && result.message) {
+          errMsg = result.message;
         }
         toast.error(errMsg);
       }

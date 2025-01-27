@@ -1,38 +1,54 @@
-import { DB_URL, JWT_SECRET_KEY } from "../../../common/constant";
-import { UserType } from "../../../common/types";
-import jwt from  "jsonwebtoken";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { connectDB } from "@/app/server/db/connectDB";
+import { ApiResponse, JWT_SECRET_KEY } from "../../../common/constant";
+import userModel from "../../../server/models/user";
 
 export async function POST(request: Request) {
-  // get all users
-  const response = await fetch(`${DB_URL}/users`);
-  const users = await response.json();
+  const { email, password } = await request.json();
 
-  // get data from body
-  const user = await request.json();
+  const dbConnection = await connectDB();
 
-  const findUser = users.find((item: UserType) => item.email === user.email && item.password === user.password);
+  if (!dbConnection) {
+    return ApiResponse(500, {
+      type: "error",
+      message: "Failed to connect server",
+    });
+  }
 
-  if (findUser) {
-    const token = jwt.sign({ userId : findUser.id}, JWT_SECRET_KEY, {expiresIn : "1d"})
-    return new Response(
-      JSON.stringify({
-        data: findUser,
-        token
-      }),
-      {
-        headers: { "Content-Type": "application/json" },
-        status: 200,
-      }
-    );
-  } else {
-    return new Response(
-        JSON.stringify({
-          error: "Invalid Details",
-        }),
-        {
-          headers: { "Content-Type": "application/json" },
-          status: 404,
+  try {
+    if (email && password) {
+      const user = await userModel.findOne({ email: email });
+      if (user === null) {
+        return ApiResponse(400, {
+          type: "error",
+          message: "Invalid details",
+        });
+      } else {
+        const isPwdMatch = await bcrypt.compare(password, user.password);
+        if (email === user.email && isPwdMatch) {
+          const token = jwt.sign({ userID: user._id }, JWT_SECRET_KEY, {
+            expiresIn: "1d",
+          });
+          return ApiResponse(200, {
+            type: "success",
+            message: "Login success",
+            token: token,
+          });
+        } else {
+          return ApiResponse(400, {
+            type: "error",
+            message: "Email or Password is incorrect",
+          });
         }
-    );
+      }
+    } else {
+      return ApiResponse(400, {
+        type: "error",
+        message: "All fields are required",
+      });
+    }
+  } catch (error) {
+    console.log(error);
   }
 }

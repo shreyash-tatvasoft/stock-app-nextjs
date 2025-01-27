@@ -34,15 +34,15 @@ const LoginForm = () => {
       });
       const result = await res.json();
 
-      if (result && result.data) {
+      if (result && result.token) {
         toast.success("Login Successfully");
         localStorage.setItem("token", result.token)
         router.push(ROUTES.MAIN_PAGE);
         formik.resetForm();
       } else {
         let errMsg = "Something went wrong";
-        if (result && result.error) {
-          errMsg = result.error;
+        if (result && result.message) {
+          errMsg = result.message;
         }
         toast.error(errMsg);
       }

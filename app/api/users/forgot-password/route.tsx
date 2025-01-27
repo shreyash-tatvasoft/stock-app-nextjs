@@ -1,40 +1,45 @@
-import { redirect } from "next/navigation";
-import { DB_URL, JWT_SECRET_KEY } from "../../../common/constant";
-import { UserType } from "../../../common/types";
 import jwt from "jsonwebtoken";
+import { connectDB } from "@/app/server/db/connectDB";
+import { ApiResponse, JWT_SECRET_KEY } from "../../../common/constant";
+import userModel from "../../../server/models/user";
 
 export async function POST(request: Request) {
-  // get all users
-  const response = await fetch(`${DB_URL}/users`);
-  const users = await response.json();
+  const { email } = await request.json();
 
-  // get data from body
-  const user = await request.json();
+  const dbConnection = await connectDB();
 
-  const findUser = users.find((item: UserType) => item.email === user.email);
-
-  if (findUser) {
-    const token = jwt.sign({ userId: findUser.id }, JWT_SECRET_KEY, {
-      expiresIn: "1d",
+  if (!dbConnection) {
+    return ApiResponse(500, {
+      type: "error",
+      message: "Failed to connect server",
     });
-    return new Response(
-        JSON.stringify({
-            token,
-        }),
-        {
-            headers: { "Content-Type": "application/json" },
-            status: 200,
-        }
-    );
-  } else {
-    return new Response(
-      JSON.stringify({
-        error: "Invalid Email Address",
-      }),
-      {
-        headers: { "Content-Type": "application/json" },
-        status: 404,
+  }
+
+  try {
+    if (email) {
+      const user = await userModel.findOne({ email: email });
+      if (user === null) {
+        return ApiResponse(404, {
+          type: "error",
+          message: "Please enter valid Email.",
+        });
+      } else {
+        const token = jwt.sign({ userID: user._id }, JWT_SECRET_KEY, {
+          expiresIn: "1d",
+        });
+        return ApiResponse(200, {
+          type: "success",
+          message: "Redirect to reset page",
+          token,
+        });
       }
-    );
+    } else {
+      return ApiResponse(404, {
+        type: "error",
+        message: "Please provide valid email",
+      });
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
