@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker';
+import jwt, {JwtPayload} from "jsonwebtoken"
 
 export const BASE_URL = "http://localhost:3000/api"
 export const DB_URL = "http://localhost:5000"
@@ -17,7 +19,9 @@ export const ROUTES = {
    LOGIN : "/login",
    REGISTER : "/register",
    FORGOT_PASSWORD : "/forgot-password",
-   RESET_PASSWORD : "/reset-password"
+   RESET_PASSWORD : "/reset-password",
+   PROFILE: "/profile",
+   WATCHLIST : "/watchlist"
 }
 
 export const ApiResponse = (status: number, data: any) => {
@@ -26,3 +30,25 @@ export const ApiResponse = (status: number, data: any) => {
     status,
   });
 };
+
+
+export const generateDummyStockData = () => {
+  return {
+    symbol: faker.finance.currencySymbol() + faker.string.alphanumeric(3),
+    name: faker.company.name(),
+    sector: faker.commerce.department(),
+    marketCap: faker.number.int({ min: 500000000, max: 200000000000 }),
+    price: parseFloat(faker.commerce.price({ min : 10, max: 5000})),
+    updatedAt: new Date(),
+  };
+};
+
+export const getIDFromToken = (token : string) => {
+  const userObj: JwtPayload | string = jwt.verify(token, JWT_SECRET_KEY);
+  let userId = "";
+  if (typeof userObj !== "string" && userObj && userObj.userID) {
+    userId = userObj.userID;
+  }
+
+  return userId
+}
