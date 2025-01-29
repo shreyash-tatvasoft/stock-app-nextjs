@@ -21,3 +21,43 @@ export interface PasswordFields {
 export interface FormProps {
     token: string
   }
+
+export interface Stock {
+  _id: string;
+  symbol: string;
+  name: string;
+  sector: string;
+  marketCap: number;
+  price: number;
+  updatedAt: string;
+}
+
+export interface StockData {
+  _id: string;
+  symbol: string;
+  name: string;
+  sector: string;
+  marketCap: number;
+  price: number;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface UserData {
+  _id: string;
+  name: string;
+  email: string;
+}
+
+export interface WatchlistItem {
+  _id: string;
+  user: UserData;
+  stock: StockData;
+  addedAt: string;
+  __v: number;
+}
+
+export interface WatchListApiResponse {
+  type: string;
+  data: WatchlistItem[];
+}
