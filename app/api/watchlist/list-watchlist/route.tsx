@@ -1,5 +1,5 @@
 import { connectDB } from "@/app/server/db/connectDB";
-import { ApiResponse } from "../../../common/constant";
+import { ApiResponse, getIDFromToken } from "../../../common/constant";
 import watchListModel from "@/app/server/models/watchlist";
 
 export async function GET(request: Request) {
@@ -18,9 +18,9 @@ export async function GET(request: Request) {
         return ApiResponse(404,{ type: "error", message: "Invalid User Details"})
     }
 
+    const user_id = getIDFromToken(token)
 
-    const allData = await watchListModel.find()
-
+    const allData = await watchListModel.find({ user : user_id}).populate("stock").populate("user", "name email")
 
     if (allData && allData.length > 0) {
       return ApiResponse(200, { type: "success", data: allData});

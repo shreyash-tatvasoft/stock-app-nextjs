@@ -1,8 +1,7 @@
-import { ApiResponse, JWT_SECRET_KEY, generateDummyStockData, getIDFromToken } from "../../../common/constant";
+import { ApiResponse, getIDFromToken } from "../../../common/constant";
 import { connectDB } from "@/app/server/db/connectDB";
 import stockModel from "@/app/server/models/stocks";
 import watchListModel from "@/app/server/models/watchlist";
-import jwt, {JwtPayload} from "jsonwebtoken"
 
 export async function POST(request: Request) {
 
@@ -21,9 +20,13 @@ export async function POST(request: Request) {
 
         if(availableStocks) {
             let userId = getIDFromToken(token)
+            const alreadyInWatchList = await watchListModel.findOne({ user : userId, stock : stock_id})
+            if(alreadyInWatchList) {
+                return ApiResponse(404,{ type: "error", message: "Stock is already in watchlist"})
+            }
             const newWatchList = new watchListModel({
-                userId : userId,
-                stockId: stock_id,
+                user : userId,
+                stock: stock_id,
                 addedAt: Date.now()
             })
 
