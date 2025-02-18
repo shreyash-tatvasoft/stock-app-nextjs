@@ -4,7 +4,6 @@ import Navbar from "@/app/components/Navabr";
 import Autocomplete from "./AddStockForm";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { toast } from "react-toastify";
 
 
 export default async function Watchlist() {
@@ -37,8 +36,6 @@ export default async function Watchlist() {
 
     if (result && result.type === "success") {
       revalidatePath(API_ROUTES.WATCHLIST_ROUTES.GET_WATCHLIST)
-      "use client"
-      toast.success("test")
     } else {
       let errMsg = "Something went wrong";
       if (result && result.message) {
