@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ROUTES } from "../common/constant";
+import { API_ROUTES, ROUTES } from "../common/constant";
 
 
 interface NavbarProps {
@@ -22,9 +22,12 @@ const Navbar: React.FC<NavbarProps> = ({ username }) => {
     setIsPopoverOpen(false);
   };
 
-  const logout = () => {
-    localStorage.clear()
-    router.push(ROUTES.LOGIN)
+  const logout = async () => {
+    const result = await fetch(API_ROUTES.USER_ROUTES.LOGOUT, { method: "POST" });
+    const response = await result.json()
+    if(response && response.message) {
+      router.push(ROUTES.LOGIN)
+    }
   }
 
   const goToProfile = () => {

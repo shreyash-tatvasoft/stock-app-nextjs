@@ -3,8 +3,10 @@ import jwt from "jsonwebtoken";
 import { connectDB } from "@/app/server/db/connectDB";
 import { ApiResponse, JWT_SECRET_KEY } from "../../../common/constant";
 import userModel from "../../../server/models/user";
+import { serialize } from "cookie"
+import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+export async function POST(request: Request, response : NextResponse) {
   const { email, password } = await request.json();
 
   const dbConnection = await connectDB();
@@ -30,11 +32,21 @@ export async function POST(request: Request) {
           const token = jwt.sign({ userID: user._id }, JWT_SECRET_KEY, {
             expiresIn: "1d",
           });
-          return ApiResponse(200, {
-            type: "success",
-            message: "Login success",
-            token: token,
+
+          const cookie = serialize("authToken", token, {
+            httpOnly: true,
+            secure: false,
+            maxAge: 60 * 60 * 24, // 1 week
+            path: "/",
+          })
+
+          const response = NextResponse.json({
+            type: "success", 
+            message: "Login success", 
+            token: token
           });
+          response.headers.set("Set-Cookie", cookie);
+          return response
         } else {
           return ApiResponse(400, {
             type: "error",

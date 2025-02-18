@@ -36,7 +36,6 @@ const LoginForm = () => {
 
       if (result && result.token) {
         toast.success("Login Successfully");
-        localStorage.setItem("token", result.token)
         router.push(ROUTES.MAIN_PAGE);
         formik.resetForm();
       } else {

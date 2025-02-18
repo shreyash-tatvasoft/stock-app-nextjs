@@ -9,6 +9,7 @@ export const API_ROUTES = {
   USER_ROUTES: {
     REGISTER: `${BASE_URL}/users/register`,
     LOGIN: `${BASE_URL}/users/login`,
+    LOGOUT: `${BASE_URL}/users/logout`,
     All_USERS: `${BASE_URL}/users`,
     FORGOT_PASSWORD: `${BASE_URL}/users/forgot-password`,
     RESET_PASSWORD: `${BASE_URL}/users/reset-password`,
@@ -19,7 +20,7 @@ export const API_ROUTES = {
   WATCHLIST_ROUTES: {
     GET_WATCHLIST: `${BASE_URL}/watchlist/list-watchlist`,
     SAVE_WATCHLIST: `${BASE_URL}/watchlist/save-watchlist`,
-    REMOVE_WATCHLIST: `${BASE_URL}/watchlist/list-watchlist`,
+    REMOVE_WATCHLIST: `${BASE_URL}/watchlist/delete-watchlist`,
   },
 };
 export const ROUTES = {
@@ -59,6 +60,5 @@ export const getIDFromToken = (token: string) => {
 
   return userId;
 };
-
 
 export const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2Nzk3NzM4NWNmMTgyYWUyNTM2MzMyZTUiLCJpYXQiOjE3MzgxNDg0NzEsImV4cCI6MTczODIzNDg3MX0.eVsBmcQ0CHo_UlK47t_AhwxTSXg_G6Ulhe3NL5bXP7E"
