@@ -31,6 +31,7 @@ export const ROUTES = {
   RESET_PASSWORD: "/reset-password",
   PROFILE: "/profile",
   WATCHLIST: "/watchlist",
+  STOCK_DASHBOARD : "/stock-dashboard"
 };
 
 export const ApiResponse = (status: number, data: any) => {

@@ -37,11 +37,15 @@ const Navbar: React.FC<NavbarProps> = ({ username }) => {
   const goToWatchList = () => {
     router.push(ROUTES.WATCHLIST)
   }
-  
+
+  const goToDashboard = () => {
+    router.push(ROUTES.STOCK_DASHBOARD)
+  }
+
   return (
     <nav className="bg-gray-800 px-12 py-4 flex items-center justify-between shadow-lg relative">
       {/* Title */}
-      <h1 className="text-2xl text-white font-semibold">Stock App</h1>
+      <h1 className="text-2xl text-white font-semibold cursor-pointer" onClick={goToDashboard}>Stock App</h1>
 
       {/* Avatar */}
       <div className="relative">

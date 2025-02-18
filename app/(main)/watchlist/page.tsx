@@ -3,12 +3,10 @@ import { WatchListApiResponse, StockData } from "@/app/common/types";
 import Navbar from "@/app/components/Navabr";
 import Autocomplete from "./AddStockForm";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
+import { getTokenFromCookie } from "@/app/common/server-constant";
 
 
 export default async function Watchlist() {
-  const cookieState = await cookies()
-  const tokenVal =  cookieState.get("authToken")?.value || ""
   const stocksApi = await fetch(API_ROUTES.STOCKS_ROUTES.ALL_STOCKS);
   const stocks = await stocksApi.json();
 
@@ -16,7 +14,7 @@ export default async function Watchlist() {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      token: tokenVal
+      token: await getTokenFromCookie()
     },
   });
   const watchlist: WatchListApiResponse = await watchListApi.json();
@@ -28,7 +26,7 @@ export default async function Watchlist() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "token": tokenVal
+        "token": await getTokenFromCookie()
       },
       body: JSON.stringify({ "stock_id" : stock._id}),
     });
@@ -54,7 +52,7 @@ export default async function Watchlist() {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        token: tokenVal,
+        token: await getTokenFromCookie(),
       },
       body: JSON.stringify({ watchlist_id: watchlistId }),
     });
