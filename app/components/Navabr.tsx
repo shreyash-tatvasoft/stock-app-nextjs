@@ -1,17 +1,14 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_ROUTES, ROUTES } from "../common/constant";
+import { getTokenFromCookie } from "../common/server-constant";
 
 
-interface NavbarProps {
-  username: string; // Pass the user's name as a prop
-}
-
-const Navbar: React.FC<NavbarProps> = ({ username }) => {
+const Navbar: React.FC = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false); // State to toggle popover
-  const firstLetter = username.charAt(0).toUpperCase(); // Get the first letter of the username
+  const [userName, setUsername] =  useState("");
   const router = useRouter()
 
   const togglePopover = () => {
@@ -42,6 +39,21 @@ const Navbar: React.FC<NavbarProps> = ({ username }) => {
     router.push(ROUTES.STOCK_DASHBOARD)
   }
 
+  const featchProfile = async () => {
+    const token = await getTokenFromCookie()
+    const response = await fetch(API_ROUTES.USER_ROUTES.SHOW_USER_INFO, { headers: { token }})
+    const result = await response.json()
+    if(result && result.data) {
+        const userName = result.data.name
+        const firstLetter = userName.charAt(0).toUpperCase(); // Get the first letter of the username
+        setUsername(firstLetter)
+    }
+  }
+
+  useEffect(() => {
+    featchProfile()
+  },[])
+
   return (
     <nav className="bg-gray-800 px-12 py-4 flex items-center justify-between shadow-lg relative">
       {/* Title */}
@@ -53,7 +65,7 @@ const Navbar: React.FC<NavbarProps> = ({ username }) => {
           onClick={togglePopover}
           className="flex items-center justify-center w-10 h-10 bg-blue-500 text-white rounded-full focus:outline-none hover:bg-blue-600"
         >
-          {firstLetter}
+          {userName}
         </button>
 
         {/* Popover */}

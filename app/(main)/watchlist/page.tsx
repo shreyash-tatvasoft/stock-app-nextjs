@@ -70,7 +70,7 @@ export default async function Watchlist() {
 
   return (
     <>
-      <Navbar username="T" />
+      <Navbar/>
       <div className="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md px-25">
         <h1 className="text-2xl font-bold mb-6 text-gray-900">My Watchlist</h1>
 
