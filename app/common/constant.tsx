@@ -17,6 +17,7 @@ export const API_ROUTES = {
   },
   STOCKS_ROUTES: {
     ALL_STOCKS: `${BASE_URL}/stocks/all-stocks`,
+    GET_STOCKS: `${BASE_URL}/stocks/get-stocks`,
   },
   WATCHLIST_ROUTES: {
     GET_WATCHLIST: `${BASE_URL}/watchlist/list-watchlist`,
