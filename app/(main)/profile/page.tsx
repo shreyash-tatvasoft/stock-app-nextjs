@@ -29,7 +29,7 @@ const Profile = () => {
         const userInfo = {
           name: result.data.name,
           email: result.data.email,
-          watchlistCount: 0,
+          watchlistCount: result.watchlist_count,
           stockPurchasedCount: 0,
         };
         setUserInfo(userInfo);
