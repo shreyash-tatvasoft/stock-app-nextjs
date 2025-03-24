@@ -19,12 +19,23 @@ export async function GET(request: Request ) {
     const page = parseInt(searchParams.get("page") || "1", 10);
     const per_page = parseInt(searchParams.get("per_page") || "5", 10);
     const skip = (page - 1) * per_page;
+    const query = searchParams.get("query") || "";
+
+    // Build the search filter
+    const filter = query
+      ? {
+          $or: [
+            { name: { $regex: query, $options: "i" } }, // Case-insensitive search in 'name'
+            { sector: { $regex: query, $options: "i" } }, // Case-insensitive search in 'sector'
+          ],
+        }
+      : {};
 
     // Fetch paginated data
-    const items = await stockModel.find().skip(skip).limit(per_page);
+    const items = await stockModel.find(filter).skip(skip).limit(per_page);
 
     // Get total count
-    const totalItems = await stockModel.countDocuments();
+    const totalItems = await stockModel.countDocuments(filter);
 
     // Get total pages
     const totalPages = Math.ceil(totalItems / per_page)
