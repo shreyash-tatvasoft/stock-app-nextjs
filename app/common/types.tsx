@@ -61,3 +61,10 @@ export interface WatchListApiResponse {
   type: string;
   data: WatchlistItem[];
 }
+
+export interface SortableComponentProps {
+   submitHandler : (data : FormData) => Promise<never>
+   sortableKey : string
+   orderFormat : string
+   currentSortingKey : string
+}

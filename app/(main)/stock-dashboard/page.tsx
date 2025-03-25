@@ -5,25 +5,28 @@ import { API_ROUTES, ROUTES } from "@/app/common/constant";
 import Pagination from "@/app/components/Pagination";
 import { redirect } from "next/navigation";
 import Searchform from "./Searchform";
+import SortComponent from "./SortComponent";
 
 export default async function Stocks({
   searchParams,
 }: {
-  searchParams: { page?: string; query?: string };
+  searchParams: { page?: string; query?: string, order? : string, sortBy?: string };
 }) {
-  const { page, query } = await searchParams;
+  const { page, query, order, sortBy } = await searchParams;
   const currentPage = page ? parseInt(page, 10) : 1;
   const perPage = 5;
   const searchVal = query ? query : "";
+  const orderBy = order ? order :"asc";
+  const sortByKeys = sortBy ? sortBy : "name";
 
   const res = await fetch(
-    `${API_ROUTES.STOCKS_ROUTES.GET_STOCKS}?page=${currentPage}&per_page=${perPage}&query=${searchVal}`
+    `${API_ROUTES.STOCKS_ROUTES.GET_STOCKS}?page=${currentPage}&per_page=${perPage}&query=${searchVal}&order=${orderBy}&sortBy=${sortByKeys}`
   );
   const stocks = await res.json();
 
   const pageChange = async (page: number) => {
     "use server";
-    let params = `page=${page}`;
+    let params = `page=${page}&order=${orderBy}&sortBy=${sortByKeys}`;
 
     if (searchVal !== "") {
       params += `&query=${searchVal}`;
@@ -41,12 +44,21 @@ export default async function Stocks({
     redirect(`${ROUTES.STOCK_DASHBOARD}`);
   };
 
+  const sortingByOrder = async (formData : FormData) => {
+    "use server";
+    const orderReceived = formData.get("order") as string
+    const sortBykey = formData.get("sortBykey") as string
+
+    const orderToPass = orderReceived === "asc" ? "desc" : "asc"
+
+    redirect(`${ROUTES.STOCK_DASHBOARD}?page=${currentPage}&sortBy=${sortBykey}&order=${orderToPass}`);
+  }
+
   return (
     <div>
       {/* <Navbar /> */}
 
       <div className="m-20 p-6 bg-white rounded-lg shadow-md px-25">
-
         <h1 className="text-2xl font-bold mb-4 text-center">Stocks</h1>
 
         <Searchform
@@ -62,19 +74,51 @@ export default async function Stocks({
                 <tr className="bg-gray-100 border-b border-gray-300">
                   <th className="border-b p-3 border-r border-gray-300">#</th>
                   <th className="border-b p-3 border-r border-gray-300">
-                    Stock Name
+                    <div className="flex gap-2 justify-center items-center">
+                      <div>Stock Name</div>
+                      <SortComponent
+                        submitHandler={sortingByOrder}
+                        sortableKey="name"
+                        currentSortingKey={sortByKeys}
+                        orderFormat={orderBy}
+                      />
+                    </div>
                   </th>
                   <th className="border-b p-3 border-r border-gray-300">
                     Symbol
                   </th>
                   <th className="border-b p-3 border-r border-gray-300">
-                    Sector
+                    <div className="flex gap-2 justify-center items-center">
+                      <div>Sector</div>
+                      <SortComponent
+                        submitHandler={sortingByOrder}
+                        sortableKey="sector"
+                        currentSortingKey={sortByKeys}
+                        orderFormat={orderBy}
+                      />
+                    </div>
                   </th>
                   <th className="border-b p-3 border-r border-gray-300">
-                    Market Cap
+                    <div className="flex gap-2 justify-center items-center">
+                      <div>Market Cap</div>
+                      <SortComponent
+                        submitHandler={sortingByOrder}
+                        sortableKey="marketCap"
+                        currentSortingKey={sortByKeys}
+                        orderFormat={orderBy}
+                      />
+                    </div>
                   </th>
                   <th className="border-b p-3 border-r border-gray-300">
-                    Price
+                    <div className="flex gap-2 justify-center items-center">
+                      <div>Price</div>
+                      <SortComponent
+                        submitHandler={sortingByOrder}
+                        sortableKey="price"
+                        currentSortingKey={sortByKeys}
+                        orderFormat={orderBy}
+                      />
+                    </div>
                   </th>
                   <th className="border-b p-3 border-r border-gray-300 text-center">
                     Actions
@@ -131,7 +175,6 @@ export default async function Stocks({
             No data available
           </div>
         )}
-        
       </div>
     </div>
   );

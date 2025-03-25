@@ -6,7 +6,6 @@ const layout : React.FC<{children : ReactNode}> = ( { children }) => {
   return (
     <div>
       <Navbar />
-      {/* <Sidebar /> */}
 
       <div className="grid grid-cols-12 h-screen">
         {/* Sidebar */}
@@ -20,7 +19,6 @@ const layout : React.FC<{children : ReactNode}> = ( { children }) => {
           <main className="flex-1 bg-gray-100">{children}</main>
         </div>
       </div>
-      {/* <div>{children}</div> */}
     </div>
   );
 }

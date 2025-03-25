@@ -21,6 +21,9 @@ export async function GET(request: Request ) {
     const skip = (page - 1) * per_page;
     const query = searchParams.get("query") || "";
 
+    const sortBy = searchParams.get("sortBy") || "name"; // Default sorting by 'name'
+    const order = searchParams.get("order") || "asc"; // Default order is ascending
+
     // Build the search filter
     const filter = query
       ? {
@@ -31,8 +34,11 @@ export async function GET(request: Request ) {
         }
       : {};
 
+    // Sorting direction: 1 for ascending, -1 for descending
+    const sortOrder = order === "desc" ? -1 : 1;
+
     // Fetch paginated data
-    const items = await stockModel.find(filter).skip(skip).limit(per_page);
+    const items = await stockModel.find(filter).sort({ [sortBy] : sortOrder}).skip(skip).limit(per_page);
 
     // Get total count
     const totalItems = await stockModel.countDocuments(filter);
