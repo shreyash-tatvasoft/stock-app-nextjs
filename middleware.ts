@@ -14,5 +14,5 @@ export function middleware(req: NextRequest) {
 
 // Apply middleware only to specific routes
 export const config = {
-  matcher: ["/","/stock-dashboard", "/profile", "/watchlist"], // Protect only these pages
+  matcher: ["/","/stock-dashboard", "/dashboard", "/watchlist", "/portfolio"], // Protect only these pages
 };

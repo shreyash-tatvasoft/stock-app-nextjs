@@ -36,7 +36,7 @@ const LoginForm = () => {
 
       if (result && result.token) {
         toast.success("Login Successfully");
-        router.push(ROUTES.STOCK_DASHBOARD);
+        router.push(ROUTES.DASHBOARD);
         formik.resetForm();
       } else {
         let errMsg = "Something went wrong";

@@ -43,9 +43,9 @@ export default async function Stocks({
 
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
 
-      <div className="container mx-auto p-6">
+      <div className="m-20 p-6 bg-white rounded-lg shadow-md px-25">
 
         <h1 className="text-2xl font-bold mb-4 text-center">Stocks</h1>
 

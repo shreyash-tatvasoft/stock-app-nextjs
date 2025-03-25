@@ -27,14 +27,6 @@ const Navbar: React.FC = () => {
     }
   }
 
-  const goToProfile = () => {
-    router.push(ROUTES.PROFILE)
-  }
-
-  const goToWatchList = () => {
-    router.push(ROUTES.WATCHLIST)
-  }
-
   const goToDashboard = () => {
     router.push(ROUTES.STOCK_DASHBOARD)
   }
@@ -75,20 +67,6 @@ const Navbar: React.FC = () => {
             onMouseLeave={closePopover}
           >
             <div className="flex flex-col">
-                {/* Profile */}
-              <button
-                onClick={goToProfile}
-                className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100"
-              >
-                👤 Profile
-              </button>
-              {/* Watchlist */}
-              <button
-                onClick={goToWatchList}
-                className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100"
-              >
-                📋 Watchlist
-              </button>
               {/* Logout */}
               <button
                 onClick={logout}

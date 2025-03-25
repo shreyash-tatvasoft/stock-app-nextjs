@@ -13,7 +13,8 @@ export const API_ROUTES = {
     All_USERS: `${BASE_URL}/users`,
     FORGOT_PASSWORD: `${BASE_URL}/users/forgot-password`,
     RESET_PASSWORD: `${BASE_URL}/users/reset-password`,
-    SHOW_USER_INFO:`${BASE_URL}/users/show-user`
+    SHOW_USER_INFO:`${BASE_URL}/users/show-user`,
+    GET_ALL_COUNTS: `${BASE_URL}/users/all-counts`
   },
   STOCKS_ROUTES: {
     ALL_STOCKS: `${BASE_URL}/stocks/all-stocks`,
@@ -31,9 +32,10 @@ export const ROUTES = {
   REGISTER: "/register",
   FORGOT_PASSWORD: "/forgot-password",
   RESET_PASSWORD: "/reset-password",
-  PROFILE: "/profile",
   WATCHLIST: "/watchlist",
-  STOCK_DASHBOARD : "/stock-dashboard"
+  STOCK_DASHBOARD : "/stock-dashboard",
+  DASHBOARD: "/dashboard",
+  PORTFOLIO : "/portfolio"
 };
 
 export const ApiResponse = (status: number, data: any) => {
