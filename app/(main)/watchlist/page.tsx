@@ -1,12 +1,21 @@
-import { API_ROUTES } from "@/app/common/constant";
+import { API_ROUTES, ROUTES } from "@/app/common/constant";
 import { WatchListApiResponse, StockData } from "@/app/common/types";
 import Navbar from "@/app/components/Navabr";
 import Autocomplete from "./AddStockForm";
 import { revalidatePath } from "next/cache";
 import { getTokenFromCookie } from "@/app/common/server-constant";
+import ToastComponent from "@/app/components/ToastComponent";
+import { redirect } from "next/navigation";
+import { decrypt } from "@/app/common/cryptoUtils";
 
-
-export default async function Watchlist() {
+export default async function Watchlist({
+  searchParams,
+}: {
+  searchParams: { type? : string, msg?: string;};
+}) {
+  const { msg, type } = await searchParams
+  const messageTxt = msg ? decrypt(msg) : "";
+  const typeTxt = type ? decrypt(type) : "";
   const stocksApi = await fetch(API_ROUTES.STOCKS_ROUTES.ALL_STOCKS);
   const stocks = await stocksApi.json();
 
@@ -39,6 +48,8 @@ export default async function Watchlist() {
       if (result && result.message) {
         errMsg = result.message;
       }
+
+      redirect(`${ROUTES.WATCHLIST}?type=${result.type}&msg=${errMsg}`)
     }
    
   }
@@ -145,6 +156,8 @@ export default async function Watchlist() {
         ) : (
           <p className="text-gray-600">Your watchlist is empty.</p>
         )}
+
+        {messageTxt !== "" && <ToastComponent type={typeTxt} message={messageTxt} />}
       </div>
     </>
   );

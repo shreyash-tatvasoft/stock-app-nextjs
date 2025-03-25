@@ -2,6 +2,7 @@ import { ApiResponse, getIDFromToken } from "../../../common/constant";
 import { connectDB } from "@/app/server/db/connectDB";
 import stockModel from "@/app/server/models/stocks";
 import watchListModel from "@/app/server/models/watchlist";
+import { encrypt } from "@/app/common/cryptoUtils";
 
 export async function POST(request: Request) {
 
@@ -22,7 +23,7 @@ export async function POST(request: Request) {
             let userId = getIDFromToken(token)
             const alreadyInWatchList = await watchListModel.findOne({ user : userId, stock : stock_id})
             if(alreadyInWatchList) {
-                return ApiResponse(404,{ type: "error", message: "Stock is already in watchlist"})
+                return ApiResponse(404,{ type: encrypt("error"), message: encrypt("Stock is already in watchlist")})
             }
             const newWatchList = new watchListModel({
                 user : userId,

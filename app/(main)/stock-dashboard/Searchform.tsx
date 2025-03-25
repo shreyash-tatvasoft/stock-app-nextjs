@@ -6,10 +6,11 @@ import React, { useState } from 'react'
 interface SearchFormProps {
     handleSubmit : (searchVal : string) => Promise<void>
     handleClearSearch : () => Promise<void>
+    initialQueryValue : string
 }
 
-const Searchform :React.FC<SearchFormProps> = ({ handleSubmit, handleClearSearch }) => {
-    const [query, setQuery] = useState("")
+const Searchform :React.FC<SearchFormProps> = ({ handleSubmit, handleClearSearch, initialQueryValue }) => {
+    const [query, setQuery] = useState(initialQueryValue)
 
     const handleSearch = () => {
         handleSubmit(query.trim())

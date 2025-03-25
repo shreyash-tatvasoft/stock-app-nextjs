@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 interface Props {
   message: string;
-  type: "success" | "error" | "info" | "warning";
+  type: string;
 }
 
 const ToastComponent: React.FC<Props> = ({ message, type }) => {

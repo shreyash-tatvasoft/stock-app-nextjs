@@ -51,7 +51,13 @@ export default async function Stocks({
 
     const orderToPass = orderReceived === "asc" ? "desc" : "asc"
 
-    redirect(`${ROUTES.STOCK_DASHBOARD}?page=${currentPage}&sortBy=${sortBykey}&order=${orderToPass}`);
+    let params = `page=${currentPage}&sortBy=${sortBykey}&order=${orderToPass}`
+
+    if (searchVal !== "") {
+      params += `&query=${searchVal}`;
+    }
+
+    redirect(`${ROUTES.STOCK_DASHBOARD}?${params}`);
   }
 
   return (
@@ -64,6 +70,7 @@ export default async function Stocks({
         <Searchform
           handleSubmit={searchQuery}
           handleClearSearch={clearSearchQuery}
+          initialQueryValue={searchVal}
         />
 
         {/* Table */}
