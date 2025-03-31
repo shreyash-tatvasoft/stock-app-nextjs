@@ -127,9 +127,6 @@ export default async function Stocks({
                       />
                     </div>
                   </th>
-                  <th className="border-b p-3 border-r border-gray-300 text-center">
-                    Actions
-                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -155,11 +152,6 @@ export default async function Stocks({
                     </td>
                     <td className="p-3 border-r border-gray-300">
                       ${stock.price.toFixed(2)}
-                    </td>
-                    <td className="p-3 border-r border-gray-300 text-center">
-                      <button className="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-800 transition">
-                        View
-                      </button>
                     </td>
                   </tr>
                 ))}

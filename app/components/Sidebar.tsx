@@ -10,7 +10,6 @@ const Sidebar = () => {
     { name: "Dashboard", path: `${ROUTES.DASHBOARD}` },
     { name: "Available Stocks", path: `${ROUTES.STOCK_DASHBOARD}` },
     { name: "My Watchlists", path: `${ROUTES.WATCHLIST}` },
-    { name: "Portfolio", path: `${ROUTES.PORTFOLIO}` },
   ];
 
   return (
